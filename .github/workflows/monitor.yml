@@ -4,6 +4,11 @@ on:
   schedule:
     - cron: "*/5 * * * *"   # cada 5 min (GitHub puede retrasarlo unos minutos)
   workflow_dispatch:         # permite lanzarlo a mano desde la pestaña Actions
+    inputs:
+      probar_telegram:
+        description: "Solo enviar un mensaje de prueba a Telegram"
+        type: boolean
+        default: false
 
 permissions:
   contents: write            # para guardar state.json en el repo
@@ -30,7 +35,7 @@ jobs:
         env:
           TELEGRAM_TOKEN: ${{ secrets.TELEGRAM_TOKEN }}
           TELEGRAM_CHAT_ID: ${{ secrets.TELEGRAM_CHAT_ID }}
-        run: python monitor.py
+        run: python monitor.py ${{ inputs.probar_telegram && '--test' || '' }}
 
       - name: Guardar estado
         run: |
